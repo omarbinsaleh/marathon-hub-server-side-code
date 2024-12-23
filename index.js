@@ -44,6 +44,14 @@ async function run() {
          res.send(data);
       })
 
+      // get all marathons of a specific user
+      app.get('/marathons/:email', async (req, res) => {
+         const email = req.params.email;
+         const query = {'userInfo.email': email};
+         const result = await marathonsCollection.find(query).toArray();
+         res.send(result);
+      })
+
       app.get('/', (req, res) => {
          res.send('Serever is running....')
       })
