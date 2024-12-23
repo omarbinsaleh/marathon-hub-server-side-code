@@ -25,6 +25,25 @@ const client = new MongoClient(uri, {
 async function run() {
    try {
 
+      // create database and data collections:
+      const db = client.db('marathon_hub');
+      const marathonsCollection = db.collection('marathons');
+      const marathonRegistrationCollection = db.collection('marathon_registrations');
+
+      // add a marathon
+      app.post('/marathons/add', async ( req, res) => {
+         const marathonData = req.body;
+         const finalData = {...marathonData, createdAt: new Date()}
+         const result = await marathonsCollection.insertOne(finalData);
+         res.send(result);
+      })
+
+      // get marathons
+      app.get('/marathons', async (req, res) => {
+         const data = await marathonsCollection.find().toArray();
+         res.send(data);
+      })
+
       app.get('/', (req, res) => {
          res.send('Serever is running....')
       })
