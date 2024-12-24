@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb')
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb')
 
 // create the express application:
 const app = express();
@@ -41,14 +41,21 @@ async function run() {
       // get marathons
       app.get('/marathons', async (req, res) => {
          let size = 0;
+         const filter = {};
 
          if(req.query.count) {
             size = parseInt(req.query.count);
          }
 
-         const data = await marathonsCollection.find().limit(size).toArray();
+         if(req.query.id) {
+            filter._id = new ObjectId(req.query.id);
+         }
+
+         const data = await marathonsCollection.find(filter).limit(size).toArray();
          res.send(data);
       })
+
+
 
       // get all marathons of a specific user
       app.get('/marathons/:email', async (req, res) => {
