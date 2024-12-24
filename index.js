@@ -40,7 +40,13 @@ async function run() {
 
       // get marathons
       app.get('/marathons', async (req, res) => {
-         const data = await marathonsCollection.find().toArray();
+         let size = 0;
+
+         if(req.query.count) {
+            size = parseInt(req.query.count);
+         }
+
+         const data = await marathonsCollection.find().limit(size).toArray();
          res.send(data);
       })
 
