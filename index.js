@@ -82,6 +82,35 @@ async function run() {
          res.send(result);
       });
 
+      app.post('/marathon-registrations', async (req, res) => {
+         const data = req.body;
+         const result = await marathonRegistrationCollection.insertOne(data, {upsert: true});
+
+         // increase the registrationCount:
+         const filter = {_id : new ObjectId(data.marathonId)};
+         const doc = {
+            $inc: {
+               registrationCount : 1
+            }
+         }
+         const updateRegistrationCount = await marathonsCollection.updateOne(filter, doc)
+
+         res.send(result);
+      })
+
+      app.get('marathon-registrations', async (req, res) => {
+         const result = await marathonRegistrationCollection.find().toArray();
+         res.send(result);
+      })
+
+      app.get('marathon-registration/:email', async (req, res) => {
+         const userEmail = req.email;
+         const filter = {email : userEmail}
+         const result = await marathonRegistrationCollection.find(filter).toArray();
+         res.send(result);
+      })
+
+
       app.get('/', (req, res) => {
          res.send('Serever is running....')
       })
