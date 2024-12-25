@@ -25,6 +25,9 @@ const client = new MongoClient(uri, {
 async function run() {
    try {
 
+      // Connect the client to the server	(optional starting in v4.7)
+      // await client.connect();
+
       // create database and data collections:
       const db = client.db('marathon_hub');
       const marathonsCollection = db.collection('marathons');
@@ -65,13 +68,26 @@ async function run() {
          res.send(result);
       })
 
+      app.put('/marathons/update/:id', async (req, res) => {
+         const data = req.body;
+         const marathonId = req.params.id;
+         const filter = {_id : new ObjectId(marathonId)};
+         const updatedDoc = {
+            $set: {...data}
+         }
+         const options = { upsert: true}
+         console.log(data)
+
+         const result = await marathonsCollection.updateOne(filter, updatedDoc, options );
+         res.send(result);
+      });
+
       app.get('/', (req, res) => {
          res.send('Serever is running....')
       })
 
 
-      // Connect the client to the server	(optional starting in v4.7)
-      // await client.connect();
+      
       // Send a ping to confirm a successful connection
       // await client.db("admin").command({ ping: 1 });
       console.log("Pinged your deployment. You successfully connected to MongoDB!");
