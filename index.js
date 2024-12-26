@@ -119,6 +119,27 @@ async function run() {
          res.send(result);
       })
 
+      app.delete('/marathon-registrations/delete/:id', async (req, res) => {
+         const id = req.params.id;
+         const filter = {_id: new ObjectId(id)};
+         const application = await marathonRegistrationCollection.findOne(filter);
+         
+         // 1. decrease the registrationCount:
+         const marathonId = application.marathonId;
+         const marathonFilter = {_id : new ObjectId(marathonId)};
+         const updatedDoc = {
+            $inc: {
+               registrationCount : -1
+            }
+         }
+         const dereaseRegistration = await marathonsCollection.updateOne(marathonFilter, updatedDoc);
+
+         // 2. delete the applications
+         const result = await marathonRegistrationCollection.deleteOne(filter);
+
+         res.send(result);
+      });
+
       app.get('/marathon-registrations', async (req, res) => {
          const result = await marathonRegistrationCollection.find().toArray();
          res.send(result);
