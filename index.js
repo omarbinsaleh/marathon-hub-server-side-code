@@ -30,8 +30,9 @@ async function run() {
 
       // create database and data collections:
       const db = client.db('marathon_hub');
-      const marathonsCollection = db.collection('marathons');
-      const marathonRegistrationCollection = db.collection('marathon_registrations');
+      const marathonsCollection = db.collection('marathons'); // a collection of all of the marathons events
+      const marathonRegistrationCollection = db.collection('marathon_registrations'); // the collections of all of the marathon event applications
+      const usersCollection = db.collection('users'); // the collections of the users;
 
       // add a marathon
       app.post('/marathons/add', async ( req, res) => {
@@ -156,6 +157,24 @@ async function run() {
          const userEmail = req.params.email;
          const filter = {email : userEmail}
          const result = await marathonRegistrationCollection.find(filter).toArray();
+         res.send(result);
+      })
+
+      app.post('/users/add', async (req, res) => {
+         const data = req.body;
+         const result = await usersCollection.insertOne(data);
+         res.send(result);
+      })
+
+      app.get('/users', async (req, res) => {
+         const result = await usersCollection.find().toArray();
+         res.send(result);
+      })
+
+      app.get('users/:id', async (req, res) => {
+         const id = req.params.id;
+         const filter = {_id: new ObjectId(id)};
+         const result = await usersCollection.findOne(filter);
          res.send(result);
       })
 
