@@ -82,6 +82,13 @@ async function run() {
          res.send(result);
       });
 
+      app.delete('/marathons/delete/:id', async (req, res) => {
+         const id = req.params.id;
+         const filter = {_id: new ObjectId(id)};
+         const result = await marathonsCollection.deleteOne(filter);
+         res.send(result);
+      })
+
       app.post('/marathon-registrations', async (req, res) => {
          const data = req.body;
          const result = await marathonRegistrationCollection.insertOne(data, {upsert: true});
@@ -98,13 +105,34 @@ async function run() {
          res.send(result);
       })
 
-      app.get('marathon-registrations', async (req, res) => {
+      app.put('/marathon-registrations/update/:id', async (req, res) => {
+         const id = req.params.id;
+         const data = req.body;
+         const filter = {_id: new ObjectId(id)};
+         const updatedDoc = {
+            $set: {
+               ...data, updatedAt: new Date()
+            }
+         }
+         const options = { upsert : true};
+         const result = await marathonRegistrationCollection.updateOne(filter, updatedDoc, options)
+         res.send(result);
+      })
+
+      app.get('/marathon-registrations', async (req, res) => {
          const result = await marathonRegistrationCollection.find().toArray();
          res.send(result);
       })
 
-      app.get('marathon-registration/:email', async (req, res) => {
-         const userEmail = req.email;
+      app.get('/marathon-registrations/:id', async (req, res) => {
+         const id = req.params.id;
+         const filter = {_id: new ObjectId(id)};
+         const result = await marathonRegistrationCollection.findOne(filter);
+         res.send(result);
+      })
+
+      app.get('/marathon-registration/:email', async (req, res) => {
+         const userEmail = req.params.email;
          const filter = {email : userEmail}
          const result = await marathonRegistrationCollection.find(filter).toArray();
          res.send(result);
