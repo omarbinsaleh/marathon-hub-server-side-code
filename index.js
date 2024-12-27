@@ -55,6 +55,13 @@ async function run() {
             filter._id = new ObjectId(req.query.id);
          }
 
+         if(req.query.title) {
+            filter.title = {
+               $regex : req.query.title,
+               $options: "i"
+            }
+         }
+
          const data = await marathonsCollection.find(filter).limit(size).toArray();
          res.send(data);
       })
@@ -155,7 +162,17 @@ async function run() {
       });
 
       app.get('/marathon-registrations', async (req, res) => {
-         const result = await marathonRegistrationCollection.find().toArray();
+         const filter = {}
+
+         // apply serach query
+         if(req.query.search) {
+            filter.marathonTitle = {
+               $regex: req.query.search,
+               $options: 'i'
+            }
+         }
+
+         const result = await marathonRegistrationCollection.find(filter).toArray();
          res.send(result);
       })
 
@@ -169,6 +186,15 @@ async function run() {
       app.get('/marathon-registration/:email', async (req, res) => {
          const userEmail = req.params.email;
          const filter = {email : userEmail}
+
+         // apply serach query
+         if(req.query.search) {
+            filter.marathonTitle = {
+               $regex: req.query.search,
+               $options: 'i'
+            }
+         }
+
          const result = await marathonRegistrationCollection.find(filter).toArray();
          res.send(result);
       })
