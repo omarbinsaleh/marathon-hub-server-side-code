@@ -92,6 +92,17 @@ async function run() {
 
       app.post('/marathon-registrations', async (req, res) => {
          const data = req.body;
+
+         // check if the user has applied to this event
+         const userEmail = data.email;
+         const applicationFilter = { email : userEmail };
+         const userApplication = await marathonRegistrationCollection.findOne(applicationFilter)
+         if (userApplication) {
+            return res.send({
+               message: 'NOT ALLOWED'
+            })
+         }
+
          const result = await marathonRegistrationCollection.insertOne(data, {upsert: true});
 
          // increase the registrationCount:
