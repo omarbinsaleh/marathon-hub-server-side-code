@@ -103,6 +103,7 @@ async function run() {
             })
          }
 
+         // save the application to application or marathon registration collection in DB:
          const result = await marathonRegistrationCollection.insertOne(data, {upsert: true});
 
          // increase the registrationCount:
@@ -114,6 +115,7 @@ async function run() {
          }
          const updateRegistrationCount = await marathonsCollection.updateOne(filter, doc)
 
+         // send result to the client
          res.send(result);
       })
 
