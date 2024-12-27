@@ -34,7 +34,7 @@ async function run() {
       const marathonRegistrationCollection = db.collection('marathon_registrations'); // the collections of all of the marathon event applications
       const usersCollection = db.collection('users'); // the collections of the users;
 
-      // add a marathon
+      // 1. MARATHON RELATED API: SAVE MARATHON IN THE DATABASE
       app.post('/marathons/add', async ( req, res) => {
          const marathonData = req.body;
          const finalData = {...marathonData, createdAt: new Date()}
@@ -42,7 +42,7 @@ async function run() {
          res.send(result);
       })
 
-      // get marathons
+      // 2. MARATHON RELATED API: RETIEVE MARATHONS FROM DATABASE
       app.get('/marathons', async (req, res) => {
          let size = 0;
          const filter = {};
@@ -66,9 +66,7 @@ async function run() {
          res.send(data);
       })
 
-
-
-      // get all marathons of a specific user
+      // 3. MARATHON RELATED API: RETIEVE AVILABLE MARTHONS OF A SEPECIFIC USER USING THE USER'S EMAIL
       app.get('/marathons/:email', async (req, res) => {
          const email = req.params.email;
          const query = {'userInfo.email': email};
@@ -76,6 +74,7 @@ async function run() {
          res.send(result);
       })
 
+      // 4. MARATHON RELATED API: UPDATE OR EDIT A PARTICULAR MARATHON'S IFORMATION
       app.put('/marathons/update/:id', async (req, res) => {
          const data = req.body;
          const marathonId = req.params.id;
@@ -90,6 +89,7 @@ async function run() {
          res.send(result);
       });
 
+      // 5. MARATHON RELATED API: DELETE A PARTICULAR MARATHON FROM THE DATABASE
       app.delete('/marathons/delete/:id', async (req, res) => {
          const id = req.params.id;
          const filter = {_id: new ObjectId(id)};
@@ -97,6 +97,7 @@ async function run() {
          res.send(result);
       })
 
+      // 6. MARATHON REGISTRATION RELATED API: SAVE AN APPLICATION TO THE DATABASE
       app.post('/marathon-registrations', async (req, res) => {
          const data = req.body;
 
@@ -126,6 +127,7 @@ async function run() {
          res.send(result);
       })
 
+      // 7. MARATHON REGISTRATION RELATED API: UPDATE INFORMATION IN A PARTICULAR APPLICATION
       app.put('/marathon-registrations/update/:id', async (req, res) => {
          const id = req.params.id;
          const data = req.body;
@@ -140,6 +142,7 @@ async function run() {
          res.send(result);
       })
 
+      // 8. MARATHON REGISTRATION RELATED API: DELETE AN APPLICATION FROM THE DATABASE
       app.delete('/marathon-registrations/delete/:id', async (req, res) => {
          const id = req.params.id;
          const filter = {_id: new ObjectId(id)};
@@ -161,6 +164,7 @@ async function run() {
          res.send(result);
       });
 
+      // 9. MARATHON REGISTRATION RELATED API: RETRIEVE ALL THE APPLICATIONS AVIALABLE IN THE DATABASE
       app.get('/marathon-registrations', async (req, res) => {
          const filter = {}
 
@@ -176,6 +180,7 @@ async function run() {
          res.send(result);
       })
 
+      // 10. MARATHON REGISTRATION RELATED API: RETRIEVE INFORMATION ABOUT A PARTICULAR APPLICATION
       app.get('/marathon-registrations/:id', async (req, res) => {
          const id = req.params.id;
          const filter = {_id: new ObjectId(id)};
@@ -183,6 +188,7 @@ async function run() {
          res.send(result);
       })
 
+      // 11. MARATHON REGISTRATION RELATED API: RETIEVE ALL THE APPLICATIONS OF A PARTICULAR USER USING HIS EMAIL
       app.get('/marathon-registration/:email', async (req, res) => {
          const userEmail = req.params.email;
          const filter = {email : userEmail}
@@ -199,17 +205,20 @@ async function run() {
          res.send(result);
       })
 
+      // 12. USER RELATED API: SAVE A USER INFORMATION IN THE DATABASE
       app.post('/users/add', async (req, res) => {
          const data = req.body;
          const result = await usersCollection.insertOne(data);
          res.send(result);
       })
 
+      // 13. USER RELATED API: RETRIEVE ALL THE USERS FROM THE DATABASE
       app.get('/users', async (req, res) => {
          const result = await usersCollection.find().toArray();
          res.send(result);
       })
 
+      // 14. USER RELATED API: RETRIEVE A PARTICULAR USER
       app.get('users/:id', async (req, res) => {
          const id = req.params.id;
          const filter = {_id: new ObjectId(id)};
@@ -218,6 +227,7 @@ async function run() {
       })
 
 
+      // 15. TESTING RELATED API: TEST IF THE API IS WORKING FINE OR NOT
       app.get('/', (req, res) => {
          res.send('Serever is running....')
       })
