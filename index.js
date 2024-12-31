@@ -46,6 +46,16 @@ async function run() {
       app.get('/marathons', async (req, res) => {
          let size = 0;
          const filter = {};
+         const sortingOption = {}
+
+         if (req.query.sort) {
+            const sort = req.query.sort;
+            if(sort === 'latest') {
+               sortingOption.createdAt = -1
+            } else {
+               sortingOption.createdAt = 1
+            }
+         }
 
          if(req.query.count) {
             size = parseInt(req.query.count);
@@ -62,7 +72,7 @@ async function run() {
             }
          }
 
-         const data = await marathonsCollection.find(filter).limit(size).toArray();
+         const data = await marathonsCollection.find(filter).limit(size).sort(sortingOption).toArray();
          res.send(data);
       })
 
@@ -103,7 +113,7 @@ async function run() {
 
          // check if the user has applied to this event
          const userEmail = data.email;
-         const applicationFilter = { email : userEmail };
+         const applicationFilter = { email : userEmail, marathonId: data.marathonId };
          const userApplication = await marathonRegistrationCollection.findOne(applicationFilter)
          if (userApplication) {
             return res.send({
