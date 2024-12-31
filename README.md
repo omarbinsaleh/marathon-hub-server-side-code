@@ -133,3 +133,26 @@ The Marathon Hub server is the backend for managing marathon events, registratio
    DB_USERNAME=<your_mongodb_username>
    DB_PASSWORD=<your_mongodb_password>
 ```
+
+---
+
+## Database Structure
+
+### Collections
+1. `marathons`
+   Stores marathon event details.
+
+2. `marathon_registrations`
+   Stores participant registration details for marathons.
+
+3. `users`
+   Stores user information, including organizer and participant data.
+
+---
+
+## Dependencies
+   - **Node.js**: JavaScript runtime.
+   - **Express.js**: Backend framework.
+   - **MongoDB**: Database for storing marathon data.
+   - **dotenv**: For managing environment variables.
+   - **cors**: To handle cross-origin requests.
