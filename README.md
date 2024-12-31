@@ -117,11 +117,14 @@ The Marathon Hub server is the backend for managing marathon events, registratio
    git clone https://github.com/your-repo/marathon-hub-server.git
    ```
 
+---
+
 ## Install dependencies
 
 ```bash
   npm install
 ```
+---
 
 ## Create a `.env` file in the root directory with the following variables
 
